@@ -325,7 +325,7 @@ func readDurationSpaceNext(l *lexer) stateFn {
 	case "and":
 		l.readString("and")
 		l.emit(tokenOperatorAdd)
-	case "one":
+	case "one", "a":
 		fallthrough
 	case "two":
 		fallthrough
@@ -488,8 +488,6 @@ func readOrdinal(l *lexer) stateFn {
 	var ok bool
 	r := l.read()
 	switch r {
-	case 's':
-		ok = l.readRune('t') // 1st
 	case 'n', 'r':
 		ok = l.readRune('d') // 2nd, 3rd
 	case 't':
