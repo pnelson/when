@@ -355,49 +355,22 @@ func (p *parser) parseDigitOrdinalOf(d int) error {
 
 func (p *parser) parseDigitOrdinalOfKeyword(d int) error {
 	t := p.next()
+	u := p.next()
+	if u.typ != tokenUnit || u.val != "month" {
+		return newParseError(u, "unexpected token")
+	}
+	loc := p.now.Location()
+	h, m, s := p.rhs.Clock()
+	p.rhs = time.Date(p.now.Year(), p.now.Month(), d, h, m, s, 0, loc)
 	switch t.val {
 	case "the":
-		return p.parseDigitOrdinalOfKeywordThe(d)
 	case "last":
-		return p.parseDigitOrdinalOfKeywordLast(d)
+		p.rhs = p.rhs.AddDate(0, -1, 0)
 	case "next":
-		return p.parseDigitOrdinalOfKeywordNext(d)
-	}
-	return newParseError(t, "unexpected token")
-}
-
-func (p *parser) parseDigitOrdinalOfKeywordThe(d int) error {
-	t := p.next()
-	if t.typ != tokenUnit || t.val != "month" {
+		p.rhs = p.rhs.AddDate(0, 1, 0)
+	default:
 		return newParseError(t, "unexpected token")
 	}
-	loc := p.now.Location()
-	h, m, s := p.rhs.Clock()
-	p.rhs = time.Date(p.now.Year(), p.now.Month(), d, h, m, s, 0, loc)
-	return p.parseTime()
-}
-
-func (p *parser) parseDigitOrdinalOfKeywordLast(d int) error {
-	t := p.next()
-	if t.typ != tokenUnit || t.val != "month" {
-		return newParseError(t, "unexpected token")
-	}
-	loc := p.now.Location()
-	h, m, s := p.rhs.Clock()
-	p.rhs = time.Date(p.now.Year(), p.now.Month(), d, h, m, s, 0, loc)
-	p.rhs = p.rhs.AddDate(0, -1, 0)
-	return p.parseTime()
-}
-
-func (p *parser) parseDigitOrdinalOfKeywordNext(d int) error {
-	t := p.next()
-	if t.typ != tokenUnit || t.val != "month" {
-		return newParseError(t, "unexpected token")
-	}
-	loc := p.now.Location()
-	h, m, s := p.rhs.Clock()
-	p.rhs = time.Date(p.now.Year(), p.now.Month(), d, h, m, s, 0, loc)
-	p.rhs = p.rhs.AddDate(0, 1, 0)
 	return p.parseTime()
 }
 
@@ -452,50 +425,23 @@ func (p *parser) parseDigitOrdinalLastDayOf(d int) error {
 
 func (p *parser) parseDigitOrdinalLastDayOfKeyword(d int) error {
 	t := p.next()
+	u := p.next()
+	if u.typ != tokenUnit || u.val != "month" {
+		return newParseError(u, "unexpected token")
+	}
+	loc := p.now.Location()
+	h, m, s := p.rhs.Clock()
+	p.rhs = time.Date(p.now.Year(), p.now.Month(), 1, h, m, s, 0, loc)
 	switch t.val {
 	case "the":
-		return p.parseDigitOrdinalLastDayOfKeywordThe(d)
+		p.rhs = p.rhs.AddDate(0, 1, -d)
 	case "last":
-		return p.parseDigitOrdinalLastDayOfKeywordLast(d)
+		p.rhs = p.rhs.AddDate(0, 0, -d)
 	case "next":
-		return p.parseDigitOrdinalLastDayOfKeywordNext(d)
-	}
-	return newParseError(t, "unexpected token")
-}
-
-func (p *parser) parseDigitOrdinalLastDayOfKeywordThe(d int) error {
-	t := p.next()
-	if t.typ != tokenUnit || t.val != "month" {
+		p.rhs = p.rhs.AddDate(0, 2, -d)
+	default:
 		return newParseError(t, "unexpected token")
 	}
-	loc := p.now.Location()
-	h, m, s := p.rhs.Clock()
-	p.rhs = time.Date(p.now.Year(), p.now.Month(), 1, h, m, s, 0, loc)
-	p.rhs = p.rhs.AddDate(0, 1, -d)
-	return p.parseTime()
-}
-
-func (p *parser) parseDigitOrdinalLastDayOfKeywordLast(d int) error {
-	t := p.next()
-	if t.typ != tokenUnit || t.val != "month" {
-		return newParseError(t, "unexpected token")
-	}
-	loc := p.now.Location()
-	h, m, s := p.rhs.Clock()
-	p.rhs = time.Date(p.now.Year(), p.now.Month(), 1, h, m, s, 0, loc)
-	p.rhs = p.rhs.AddDate(0, 0, -d)
-	return p.parseTime()
-}
-
-func (p *parser) parseDigitOrdinalLastDayOfKeywordNext(d int) error {
-	t := p.next()
-	if t.typ != tokenUnit || t.val != "month" {
-		return newParseError(t, "unexpected token")
-	}
-	loc := p.now.Location()
-	h, m, s := p.rhs.Clock()
-	p.rhs = time.Date(p.now.Year(), p.now.Month(), 1, h, m, s, 0, loc)
-	p.rhs = p.rhs.AddDate(0, 2, -d)
 	return p.parseTime()
 }
 
