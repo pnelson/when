@@ -481,66 +481,23 @@ func (p *parser) parseDigitOrdinalLastWeekdayOf(d int, w time.Weekday) error {
 
 func (p *parser) parseDigitOrdinalLastWeekdayOfKeyword(d int, w time.Weekday) error {
 	t := p.next()
+	u := p.next()
+	if u.typ != tokenUnit || u.val != "month" {
+		return newParseError(t, "unexpected token")
+	}
+	loc := p.now.Location()
+	h, m, s := p.rhs.Clock()
+	p.rhs = time.Date(p.now.Year(), p.now.Month(), 1, h, m, s, 0, loc)
 	switch t.val {
 	case "the":
-		return p.parseDigitOrdinalLastWeekdayOfKeywordThe(d, w)
+		p.rhs = p.rhs.AddDate(0, 1, -1)
 	case "last":
-		return p.parseDigitOrdinalLastWeekdayOfKeywordLast(d, w)
+		p.rhs = p.rhs.AddDate(0, 0, -1)
 	case "next":
-		return p.parseDigitOrdinalLastWeekdayOfKeywordNext(d, w)
-	}
-	return newParseError(t, "unexpected token")
-}
-
-func (p *parser) parseDigitOrdinalLastWeekdayOfKeywordThe(d int, w time.Weekday) error {
-	t := p.next()
-	if t.typ != tokenUnit || t.val != "month" {
+		p.rhs = p.rhs.AddDate(0, 2, -1)
+	default:
 		return newParseError(t, "unexpected token")
 	}
-	loc := p.now.Location()
-	h, m, s := p.rhs.Clock()
-	p.rhs = time.Date(p.now.Year(), p.now.Month(), 1, h, m, s, 0, loc)
-	p.rhs = p.rhs.AddDate(0, 1, -1)
-	days := int(p.rhs.Weekday() - w)
-	if days < 0 {
-		days += 7
-	}
-	p.rhs = p.rhs.AddDate(0, 0, -days)
-	for i := 0; i < d-1; i++ {
-		p.rhs = p.rhs.AddDate(0, 0, -7)
-	}
-	return p.parseTime()
-}
-
-func (p *parser) parseDigitOrdinalLastWeekdayOfKeywordLast(d int, w time.Weekday) error {
-	t := p.next()
-	if t.typ != tokenUnit || t.val != "month" {
-		return newParseError(t, "unexpected token")
-	}
-	loc := p.now.Location()
-	h, m, s := p.rhs.Clock()
-	p.rhs = time.Date(p.now.Year(), p.now.Month(), 1, h, m, s, 0, loc)
-	p.rhs = p.rhs.AddDate(0, 0, -1)
-	days := int(p.rhs.Weekday() - w)
-	if days < 0 {
-		days += 7
-	}
-	p.rhs = p.rhs.AddDate(0, 0, -days)
-	for i := 0; i < d-1; i++ {
-		p.rhs = p.rhs.AddDate(0, 0, -7)
-	}
-	return p.parseTime()
-}
-
-func (p *parser) parseDigitOrdinalLastWeekdayOfKeywordNext(d int, w time.Weekday) error {
-	t := p.next()
-	if t.typ != tokenUnit || t.val != "month" {
-		return newParseError(t, "unexpected token")
-	}
-	loc := p.now.Location()
-	h, m, s := p.rhs.Clock()
-	p.rhs = time.Date(p.now.Year(), p.now.Month(), 1, h, m, s, 0, loc)
-	p.rhs = p.rhs.AddDate(0, 2, -1)
 	days := int(p.rhs.Weekday() - w)
 	if days < 0 {
 		days += 7
