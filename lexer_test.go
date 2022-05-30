@@ -922,6 +922,49 @@ func TestLexer(t *testing.T) {
 			},
 		},
 		{
+			"2nd Tuesday of March",
+			[]token{
+				{tokenDigit, "2"},
+				{tokenOrdinal, "nd"},
+				{tokenWeekday, time.Tuesday.String()},
+				{tokenKeyword, "of"},
+				{tokenMonth, time.March.String()},
+			},
+		},
+		{
+			"2nd Tuesday of the month",
+			[]token{
+				{tokenDigit, "2"},
+				{tokenOrdinal, "nd"},
+				{tokenWeekday, time.Tuesday.String()},
+				{tokenKeyword, "of"},
+				{tokenKeyword, "the"},
+				{tokenUnit, "month"},
+			},
+		},
+		{
+			"2nd Tuesday of last month",
+			[]token{
+				{tokenDigit, "2"},
+				{tokenOrdinal, "nd"},
+				{tokenWeekday, time.Tuesday.String()},
+				{tokenKeyword, "of"},
+				{tokenKeyword, "last"},
+				{tokenUnit, "month"},
+			},
+		},
+		{
+			"2nd Tuesday of next month",
+			[]token{
+				{tokenDigit, "2"},
+				{tokenOrdinal, "nd"},
+				{tokenWeekday, time.Tuesday.String()},
+				{tokenKeyword, "of"},
+				{tokenKeyword, "next"},
+				{tokenUnit, "month"},
+			},
+		},
+		{
 			"last Tuesday of March",
 			[]token{
 				{tokenKeyword, "last"},

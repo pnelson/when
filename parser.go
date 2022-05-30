@@ -647,7 +647,43 @@ func (p *parser) parseDigitOrdinalWeekdayOf(d int, w time.Weekday) error {
 	if t.typ != tokenKeyword || t.val != "of" && t.val != "in" {
 		return newParseError(t, "unexpected token")
 	}
-	return p.parseDigitOrdinalWeekdayOfMonth(d, w)
+	t = p.peek()
+	switch t.typ {
+	case tokenKeyword:
+		return p.parseDigitOrdinalWeekdayOfKeyword(d, w)
+	case tokenMonth:
+		return p.parseDigitOrdinalWeekdayOfMonth(d, w)
+	}
+	return newParseError(t, "unexpected token")
+}
+
+func (p *parser) parseDigitOrdinalWeekdayOfKeyword(d int, w time.Weekday) error {
+	t := p.next()
+	u := p.next()
+	if u.typ != tokenUnit || u.val != "month" {
+		return newParseError(u, "unexpected token")
+	}
+	loc := p.now.Location()
+	h, m, s := p.rhs.Clock()
+	p.rhs = time.Date(p.now.Year(), p.now.Month(), 1, h, m, s, 0, loc)
+	switch t.val {
+	case "the":
+	case "last":
+		p.rhs = p.rhs.AddDate(0, -1, 0)
+	case "next":
+		p.rhs = p.rhs.AddDate(0, 1, 0)
+	default:
+		return newParseError(t, "unexpected token")
+	}
+	days := int(w - p.rhs.Weekday())
+	if days < 0 {
+		days += 7
+	}
+	p.rhs = p.rhs.AddDate(0, 0, days)
+	for i := 0; i < d-1; i++ {
+		p.rhs = p.rhs.AddDate(0, 0, 7)
+	}
+	return p.parseTime()
 }
 
 func (p *parser) parseDigitOrdinalWeekdayOfMonth(d int, w time.Weekday) error {

@@ -385,6 +385,22 @@ func TestParse(t *testing.T) {
 			time.Date(2006, time.February, 27, 0, 0, 0, 0, loc),
 		},
 		{
+			"2nd Tuesday of March",
+			time.Date(2006, time.March, 14, 0, 0, 0, 0, loc),
+		},
+		{
+			"2nd Tuesday of the month",
+			time.Date(2006, time.January, 10, 0, 0, 0, 0, loc),
+		},
+		{
+			"2nd Tuesday of last month",
+			time.Date(2005, time.December, 13, 0, 0, 0, 0, loc),
+		},
+		{
+			"2nd Tuesday of next month",
+			time.Date(2006, time.February, 14, 0, 0, 0, 0, loc),
+		},
+		{
 			"last Tuesday of March",
 			time.Date(2006, time.March, 28, 0, 0, 0, 0, loc),
 		},
