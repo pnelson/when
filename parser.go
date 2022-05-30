@@ -137,9 +137,9 @@ func (p *parser) parseDateConst() error {
 	switch t.val {
 	case "today":
 	case "tomorrow":
-		d += 1
+		d++
 	case "yesterday":
-		d -= 1
+		d--
 	default:
 		return newParseError(t, "unexpected date")
 	}
