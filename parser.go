@@ -32,9 +32,6 @@ func ParseNow(s string, now time.Time) (time.Time, error) {
 	if err != nil {
 		return t, err
 	}
-	if len(tokens) == 0 {
-		return t, nil
-	}
 	p := &parser{
 		now:    now,
 		tokens: tokens,
