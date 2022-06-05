@@ -56,7 +56,7 @@ func main() {
 	for _, tz := range timezones {
 		loc, err := time.LoadLocation(tz)
 		if err != nil {
-			fmt.Println(err)
+			fmt.Fprintf(os.Stderr, "%v\n", err)
 			continue
 		}
 		fmt.Println(t.In(loc).Format(*f))
