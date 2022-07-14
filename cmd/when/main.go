@@ -23,7 +23,7 @@ var (
 
 func init() {
 	flag.Usage = func() {
-		fmt.Fprintf(os.Stderr, "Usage: %s [OPTIONS] EXPR\n\n", os.Args[0])
+		fmt.Fprintf(os.Stderr, "Usage: %s [OPTIONS] [EXPR]\n\n", os.Args[0])
 		flag.PrintDefaults()
 	}
 }
