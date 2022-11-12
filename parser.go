@@ -65,6 +65,8 @@ func (p *parser) parseExprDigit() error {
 	d := p.next()
 	t := p.peek()
 	switch t.typ {
+	case tokenEOF, tokenDateSeparator:
+		return p.parseDateYear(d)
 	case tokenUnit:
 		return p.parseDurationLeftUnit(d, false)
 	case tokenColon:
@@ -158,9 +160,70 @@ func (p *parser) parseDateKeyword() error {
 	return p.parseKeywordOn()
 }
 
+func (p *parser) parseDateYear(d token) error {
+	y, err := strconv.Atoi(d.val)
+	if err != nil {
+		return err
+	}
+	loc := p.now.Location()
+	h, m, s := p.rhs.Clock()
+	p.rhs = time.Date(y, time.January, 1, h, m, s, 0, loc)
+	return p.parseDateYearMonth()
+}
+
+func (p *parser) parseDateYearMonth() error {
+	t := p.peek()
+	switch t.typ {
+	case tokenEOF:
+		return nil
+	case tokenDateSeparator:
+		p.next()
+	default:
+		return p.parseTime()
+	}
+	t = p.next()
+	if t.typ != tokenDigit {
+		return newParseError(t, "unexpected token")
+	}
+	M, err := strconv.Atoi(t.val)
+	if err != nil {
+		return err
+	}
+	loc := p.rhs.Location()
+	h, m, s := p.rhs.Clock()
+	p.rhs = time.Date(p.rhs.Year(), time.Month(M), 1, h, m, s, 0, loc)
+	return p.parseDateYearMonthDay()
+}
+
+func (p *parser) parseDateYearMonthDay() error {
+	t := p.peek()
+	switch t.typ {
+	case tokenEOF:
+		return nil
+	case tokenDateSeparator:
+		p.next()
+	default:
+		return p.parseTime()
+	}
+	t = p.next()
+	if t.typ != tokenDigit {
+		return newParseError(t, "unexpected token")
+	}
+	d, err := strconv.Atoi(t.val)
+	if err != nil {
+		return err
+	}
+	loc := p.rhs.Location()
+	h, m, s := p.rhs.Clock()
+	p.rhs = time.Date(p.rhs.Year(), p.rhs.Month(), d, h, m, s, 0, loc)
+	return p.parseTime()
+}
+
 func (p *parser) parseDigit(d token) error {
 	t := p.peek()
 	switch t.typ {
+	case tokenEOF, tokenDateSeparator:
+		return p.parseDateYear(d)
 	case tokenColon:
 		return p.parseDigitColon(d)
 	case tokenKeyword:
@@ -815,6 +878,9 @@ func (p *parser) parseKeywordHalfPast() error {
 func (p *parser) parseKeywordOn() error {
 	t := p.peek()
 	switch t.typ {
+	case tokenDigit:
+		d := p.next()
+		return p.parseDateYear(d)
 	case tokenWeekday:
 		return p.parseWeekday()
 	case tokenMonth:

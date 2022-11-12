@@ -752,6 +752,48 @@ func TestLexer(t *testing.T) {
 			},
 		},
 		{
+			"2006",
+			[]token{
+				{tokenDigit, "2006"},
+			},
+		},
+		{
+			"2006-01",
+			[]token{
+				{tokenDigit, "2006"},
+				{tokenDateSeparator, "-"},
+				{tokenDigit, "01"},
+			},
+		},
+		{
+			"2006-01-02",
+			[]token{
+				{tokenDigit, "2006"},
+				{tokenDateSeparator, "-"},
+				{tokenDigit, "01"},
+				{tokenDateSeparator, "-"},
+				{tokenDigit, "02"},
+			},
+		},
+		{
+			"2006/01",
+			[]token{
+				{tokenDigit, "2006"},
+				{tokenDateSeparator, "/"},
+				{tokenDigit, "01"},
+			},
+		},
+		{
+			"2006/01/02",
+			[]token{
+				{tokenDigit, "2006"},
+				{tokenDateSeparator, "/"},
+				{tokenDigit, "01"},
+				{tokenDateSeparator, "/"},
+				{tokenDigit, "02"},
+			},
+		},
+		{
 			"Sunday",
 			[]token{
 				{tokenWeekday, time.Sunday.String()},
@@ -1364,7 +1406,7 @@ func TestLexer(t *testing.T) {
 			t.Fatalf("lex(%q) %v", tt.in, err)
 		}
 		if !reflect.DeepEqual(have, tt.want) {
-			t.Errorf("lex(%q)\nhave %v\nwant %v", tt.in, have, tt.want)
+			t.Errorf("lex(%q)\nhave %#v\nwant %#v", tt.in, have, tt.want)
 		}
 	}
 }

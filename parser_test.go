@@ -237,6 +237,26 @@ func TestParse(t *testing.T) {
 			time.Date(2006, time.January, 2, 12, 0, 0, 0, loc),
 		},
 		{
+			"2006",
+			time.Date(2006, time.January, 1, 0, 0, 0, 0, loc),
+		},
+		{
+			"2006-02",
+			time.Date(2006, time.February, 1, 0, 0, 0, 0, loc),
+		},
+		{
+			"2006-01-02",
+			time.Date(2006, time.January, 2, 0, 0, 0, 0, loc),
+		},
+		{
+			"2006/02",
+			time.Date(2006, time.February, 1, 0, 0, 0, 0, loc),
+		},
+		{
+			"2006/01/02",
+			time.Date(2006, time.January, 2, 0, 0, 0, 0, loc),
+		},
+		{
 			"3am",
 			time.Date(2006, time.January, 2, 3, 0, 0, 0, loc),
 		},
@@ -307,6 +327,30 @@ func TestParse(t *testing.T) {
 		{
 			"at noon",
 			time.Date(2006, time.January, 2, 12, 0, 0, 0, loc),
+		},
+		{
+			"2006-01-02 at 3pm",
+			time.Date(2006, time.January, 2, 15, 0, 0, 0, loc),
+		},
+		{
+			"2006/01/02 at 3pm",
+			time.Date(2006, time.January, 2, 15, 0, 0, 0, loc),
+		},
+		{
+			"at 3pm 2006-01-02",
+			time.Date(2006, time.January, 2, 15, 0, 0, 0, loc),
+		},
+		{
+			"at 3pm 2006/01/02",
+			time.Date(2006, time.January, 2, 15, 0, 0, 0, loc),
+		},
+		{
+			"at 3pm on 2006-01-02",
+			time.Date(2006, time.January, 2, 15, 0, 0, 0, loc),
+		},
+		{
+			"at 3pm on 2006/01/02",
+			time.Date(2006, time.January, 2, 15, 0, 0, 0, loc),
 		},
 		{
 			"Sunday",

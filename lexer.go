@@ -15,6 +15,7 @@ const (
 	tokenBefore
 	tokenColon
 	tokenDate
+	tokenDateSeparator
 	tokenDigit
 	tokenEOF
 	tokenError
@@ -226,6 +227,10 @@ func readDigit(l *lexer) stateFn {
 		return readTwelveHour
 	case ':':
 		return readColon
+	case '-', '/':
+		l.read()
+		l.emit(tokenDateSeparator)
+		return readDigit
 	}
 	return readExpr
 }
