@@ -30,11 +30,11 @@ func TestParse(t *testing.T) {
 	tests := []testcase{
 		{
 			"",
-			time.Time{},
+			now,
 		},
 		{
 			"   ",
-			time.Time{},
+			now,
 		},
 		// lhs (words)
 		{
