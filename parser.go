@@ -886,10 +886,25 @@ func (p *parser) parseKeywordHalfPast() error {
 func (p *parser) parseKeywordNext() error {
 	t := p.peek()
 	switch t.typ {
+	case tokenMonth:
+		return p.parseKeywordNextMonth()
 	case tokenWeekday:
 		return p.parseKeywordNextWeekday()
 	}
 	return newParseError(t, "unexpected token")
+}
+
+func (p *parser) parseKeywordNextMonth() error {
+	t := p.next()
+	M, err := parseMonth(t)
+	if err != nil {
+		return err
+	}
+	loc := p.now.Location()
+	y, _, _ := p.now.Date()
+	h, m, s := p.rhs.Clock()
+	p.rhs = time.Date(y+1, M, 1, h, m, s, 0, loc)
+	return p.parseTime()
 }
 
 func (p *parser) parseKeywordNextWeekday() error {

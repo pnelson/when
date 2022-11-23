@@ -509,6 +509,14 @@ func TestParse(t *testing.T) {
 			time.Date(2006, time.January, 14, 12, 0, 0, 0, loc),
 		},
 		{
+			"next January",
+			time.Date(2007, time.January, 1, 0, 0, 0, 0, loc),
+		},
+		{
+			"next February at noon",
+			time.Date(2007, time.February, 1, 12, 0, 0, 0, loc),
+		},
+		{
 			"on the 4th",
 			time.Date(2006, time.January, 4, 0, 0, 0, 0, loc),
 		},
