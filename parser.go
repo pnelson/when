@@ -527,15 +527,21 @@ func (p *parser) parseDigitOrdinalLastWeekday(d int) error {
 	if err != nil {
 		return err
 	}
-	return p.parseDigitOrdinalLastWeekdayOf(d, w)
+	t = p.peek()
+	if t.typ == tokenKeyword && (t.val == "of" || t.val == "in") {
+		p.next()
+		return p.parseDigitOrdinalLastWeekdayOf(d, w)
+	}
+	loc := p.now.Location()
+	y, M, d := p.now.Date()
+	h, m, s := p.rhs.Clock()
+	p.rhs = time.Date(y, M, d, h, m, s, 0, loc)
+	p.rhs = p.rhs.AddDate(0, 0, int(w-p.rhs.Weekday()-7))
+	return p.parseTime()
 }
 
 func (p *parser) parseDigitOrdinalLastWeekdayOf(d int, w time.Weekday) error {
-	t := p.next()
-	if t.typ != tokenKeyword || t.val != "of" && t.val != "in" {
-		return newParseError(t, "unexpected token")
-	}
-	t = p.peek()
+	t := p.peek()
 	switch t.typ {
 	case tokenKeyword:
 		return p.parseDigitOrdinalLastWeekdayOfKeyword(d, w)

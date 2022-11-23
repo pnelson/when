@@ -445,6 +445,22 @@ func TestParse(t *testing.T) {
 			time.Date(2006, time.February, 14, 0, 0, 0, 0, loc),
 		},
 		{
+			"last Sunday",
+			time.Date(2005, time.December, 25, 0, 0, 0, 0, loc),
+		},
+		{
+			"last Monday",
+			time.Date(2005, time.December, 26, 0, 0, 0, 0, loc),
+		},
+		{
+			"last Tuesday",
+			time.Date(2005, time.December, 27, 0, 0, 0, 0, loc),
+		},
+		{
+			"last Saturday at noon",
+			time.Date(2005, time.December, 31, 12, 0, 0, 0, loc),
+		},
+		{
 			"last Tuesday of March",
 			time.Date(2006, time.March, 28, 0, 0, 0, 0, loc),
 		},
