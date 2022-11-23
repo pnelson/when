@@ -478,7 +478,7 @@ func readLetter(l *lexer) stateFn {
 	case "dec", "december":
 		l.emit(tokenMonth)
 		return readExpr
-	case "in", "of", "on", "the", "next", "last":
+	case "in", "of", "on", "the", "next", "last", "upcoming":
 		fallthrough
 	case "at", "quarter", "half", "past", "to", "after":
 		fallthrough

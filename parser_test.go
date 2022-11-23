@@ -517,6 +517,22 @@ func TestParse(t *testing.T) {
 			time.Date(2007, time.February, 1, 12, 0, 0, 0, loc),
 		},
 		{
+			"upcoming Sunday",
+			time.Date(2006, time.January, 8, 0, 0, 0, 0, loc),
+		},
+		{
+			"upcoming Monday",
+			time.Date(2006, time.January, 9, 0, 0, 0, 0, loc),
+		},
+		{
+			"upcoming Tuesday",
+			time.Date(2006, time.January, 3, 0, 0, 0, 0, loc),
+		},
+		{
+			"upcoming Saturday at noon",
+			time.Date(2006, time.January, 7, 12, 0, 0, 0, loc),
+		},
+		{
 			"on the 4th",
 			time.Date(2006, time.January, 4, 0, 0, 0, 0, loc),
 		},
