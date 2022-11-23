@@ -840,6 +840,8 @@ func (p *parser) parseKeyword() error {
 		return p.parseKeywordOn()
 	case "last":
 		return p.parseDigitOrdinalLast(1)
+	case "next":
+		return p.parseKeywordNext()
 	case "half":
 		return p.parseKeywordHalf()
 	case "quarter":
@@ -879,6 +881,29 @@ func (p *parser) parseKeywordHalfPast() error {
 	}
 	p.rhs = p.rhs.Add(30 * time.Minute)
 	return nil
+}
+
+func (p *parser) parseKeywordNext() error {
+	t := p.peek()
+	switch t.typ {
+	case tokenWeekday:
+		return p.parseKeywordNextWeekday()
+	}
+	return newParseError(t, "unexpected token")
+}
+
+func (p *parser) parseKeywordNextWeekday() error {
+	t := p.next()
+	w, err := parseWeekday(t)
+	if err != nil {
+		return err
+	}
+	loc := p.now.Location()
+	y, M, d := p.now.Date()
+	h, m, s := p.rhs.Clock()
+	p.rhs = time.Date(y, M, d, h, m, s, 0, loc)
+	p.rhs = p.rhs.AddDate(0, 0, int(w-p.rhs.Weekday()+7))
+	return p.parseTime()
 }
 
 func (p *parser) parseKeywordOn() error {
