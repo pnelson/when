@@ -536,7 +536,11 @@ func (p *parser) parseDigitOrdinalLastWeekday(d int) error {
 	y, M, d := p.now.Date()
 	h, m, s := p.rhs.Clock()
 	p.rhs = time.Date(y, M, d, h, m, s, 0, loc)
-	p.rhs = p.rhs.AddDate(0, 0, int(w-p.rhs.Weekday()-7))
+	days := int(w - p.rhs.Weekday())
+	if days >= 0 {
+		days -= 7
+	}
+	p.rhs = p.rhs.AddDate(0, 0, days)
 	return p.parseTime()
 }
 

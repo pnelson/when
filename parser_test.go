@@ -446,7 +446,7 @@ func TestParse(t *testing.T) {
 		},
 		{
 			"last Sunday",
-			time.Date(2005, time.December, 25, 0, 0, 0, 0, loc),
+			time.Date(2006, time.January, 1, 0, 0, 0, 0, loc),
 		},
 		{
 			"last Monday",
